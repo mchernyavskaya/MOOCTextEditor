@@ -77,7 +77,7 @@ public class NearbyWords implements SpellingSuggest {
      * @return
      */
     public void insertions(String s, List<String> currentList, boolean wordsOnly) {
-        for (int index = 0; index < s.length(); index++) {
+        for (int index = 0; index <= s.length(); index++) {
             for (int charCode = (int) 'a'; charCode <= (int) 'z'; charCode++) {
                 // use StringBuffer for an easy interface to permuting the
                 // letters in the String
@@ -138,19 +138,20 @@ public class NearbyWords implements SpellingSuggest {
 
         // insert first node
         queue.add(word);
-        visited.add(word);
 
         // Implement the remainder of this method, see assignment for algorithm
         while (!queue.isEmpty() && retList.size() < numSuggestions) {
             String s = queue.poll();
-            LinkedList<String> current = new LinkedList<>();
-            insertions(s, current, true);
-            subsitution(s, current, true);
-            deletions(s, current, true);
+            if (!visited.contains(s)) {
+                LinkedList<String> current = new LinkedList<>();
+                insertions(s, current, true);
+                subsitution(s, current, true);
+                deletions(s, current, true);
 
-            visited.addAll(current);
-            queue.addAll(current);
-            retList.addAll(new TreeSet<>(current));
+                visited.add(word);
+                queue.addAll(current);
+                retList.addAll(new TreeSet<>(current));
+            }
         }
         return retList;
 
@@ -173,6 +174,11 @@ public class NearbyWords implements SpellingSuggest {
         System.out.println(suggest);
 
         word = "morn";
+        suggest = w.suggestions(word, 10);
+        System.out.println("Spelling Suggestions for \"" + word + "\" are:");
+        System.out.println(suggest);
+
+        word = "dear";
         suggest = w.suggestions(word, 10);
         System.out.println("Spelling Suggestions for \"" + word + "\" are:");
         System.out.println(suggest);
